@@ -13,18 +13,22 @@ using UnityEngine;
 namespace YardAiExtended
 {
     [HarmonyPatch(typeof(CarInspector), "PopulateAIPanel")]
-    public static class AIPanelExtender
+    public class AIPanelExtender
     {
-        static void Postfix(UIPanelBuilder builder, CarInspector __instance, Car ____car)
+        static void Postfix(UIPanelBuilder builder, CarInspector __instance)
         {
+            var carField = typeof(CarInspector).GetField("_car", BindingFlags.NonPublic | BindingFlags.Instance);
+            var car = carField.GetValue(__instance) as Car;
+
             builder.FieldLabelWidth = 100f;
             builder.Spacing = 8f;
-            AutoEngineerPersistence persistence = new AutoEngineerPersistence(____car.KeyValueObject);
+            AutoEngineerPersistence persistence = new AutoEngineerPersistence(car.KeyValueObject);
+            var aimode = Mode();
 
+
+            int num = MaxSpeedMphForMode(aimode);
+            if (aimode == AutoEngineerMode.Yard)
             {
-                var aimode = Mode();
-                int num = MaxSpeedMphForMode(aimode);
-
                 RectTransform control2 = builder.ButtonStrip(delegate (UIPanelBuilder builder1)
                 {
                     builder1.AddButton("30", delegate
@@ -73,11 +77,13 @@ namespace YardAiExtended
                      }, 0f, num, wholeNumbers: true);
                      builder.AddField("Max Yard Speed", control3);
                  */
+
             }
+
 
             void SendAutoEngineerCommand(AutoEngineerMode mode, bool forward, int maxSpeedMph, float? distance)
             {
-                StateManager.ApplyLocal(new AutoEngineerCommand(____car.id, mode, forward, maxSpeedMph, distance));
+                StateManager.ApplyLocal(new AutoEngineerCommand(car.id, mode, forward, maxSpeedMph, distance));
             }
 
             AutoEngineerMode Mode()
@@ -115,7 +121,7 @@ namespace YardAiExtended
                 Orders orders = persistence.Orders;
                 if (!orders.Enabled && mode.HasValue && mode.Value != 0 && !maxSpeedMph.HasValue)
                 {
-                    float num2 = ____car.velocity * 2.23694f;
+                    float num2 = car.velocity * 2.23694f;
                     float num3 = Mathf.Abs(num2);
                     maxSpeedMph = ((num2 > 0.1f) ? (Mathf.CeilToInt(num3 / 5f) * 5) : 0);
                     forward = num2 >= -0.1f;
@@ -124,14 +130,13 @@ namespace YardAiExtended
                 {
                     maxSpeedMph = MaxSpeedMphForMode(AutoEngineerMode.Yard);
                 }
-                AutoEngineerMode mode3 = mode ?? 0;
+                AutoEngineerMode mode3 = mode ?? Mode();
                 int maxSpeedMph2 = Mathf.Min(maxSpeedMph ?? orders.MaxSpeedMph, MaxSpeedMphForMode(mode3));
                 SendAutoEngineerCommand(mode3, forward ?? orders.Forward, maxSpeedMph2, distance);
             }
         }
 
-
     }
-
-
 }
+
+
