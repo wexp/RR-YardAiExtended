@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
-  "id": "Zamu.ExampleMod",
-  "name": "Example Mod",
+  "id": "wexp.YardAiExtended",
+  "name": "YardAiExtended",
   "version": "$(AssemblyVersion)",
-  "assemblies": [ "ExampleMod" ]
+  "assemblies": [ "YardAiExtended" ]
 }

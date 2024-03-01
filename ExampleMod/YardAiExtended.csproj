@@ -11,4 +11,12 @@
 
     <GameAssembly Include="UnityEngine.CoreModule" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>D:\steam\steamapps\common\Railroader\Railroader_Data\Managed\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="KeyValue.Runtime">
+      <HintPath>D:\steam\steamapps\common\Railroader\Railroader_Data\Managed\KeyValue.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
