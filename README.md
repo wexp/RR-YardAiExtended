@@ -9,3 +9,4 @@ When that is done, drag this .zip onto Railloader.exe.
 
 # What about multiplayer?
 Should work fine in multiplayer, host does not need this installed to work.
+![image](https://github.com/wexp/RR-YardAiExtended/assets/16766593/ef19fc96-8491-475f-afa4-44a7c1767b0f)
