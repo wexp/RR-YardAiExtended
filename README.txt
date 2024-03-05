@@ -1,7 +1,11 @@
 # Yard AI Extended
 
 # What is this?
-A small tool for the game Railroader, to add more "Distance" buttons when using Yard Mode (AI Engineer).
+A small tool for the game Railroader.
+
+Adds more "Distance" buttons when using Yard Mode (AI Engineer).
+v1.1 adds an option to change the desired speed when using Yard Mode (AI Engineer).
+Maximum yard speed is increased to 25 mph, derailments will still be your responsibility.
 
 # How to install?
 You will need to get Zamu's Railloader from https://railroader.stelltis.ch/, install following the instructions there.
