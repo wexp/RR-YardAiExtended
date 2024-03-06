@@ -4,12 +4,7 @@ using HarmonyLib;
 using Model;
 using Model.AI;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Principal;
-using Track.Signals;
 using UI.Builder;
 using UI.CarInspector;
 using UI.Common;
@@ -35,7 +30,7 @@ namespace YardAiExtended
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(CarInspector), "PopulateAIPanel")]
-        static bool PopulateAIPanelPatch(UIPanelBuilder builder, CarInspector __instance, Car ____car, Window ____window)
+        static bool PopulateAIPanelPatch(UIPanelBuilder builder/*, CarInspector __instance*/, Car ____car, Window ____window)
         {
 /*            var carField = typeof(CarInspector).GetField("_car", BindingFlags.NonPublic | BindingFlags.Instance);
             var car = carField.GetValue(__instance) as Car;*/
@@ -43,8 +38,9 @@ namespace YardAiExtended
             builder.FieldLabelWidth = 100f;
             builder.Spacing = 8f;
             AutoEngineerPersistence persistence = new AutoEngineerPersistence(____car.KeyValueObject);
-            var aimode = Mode();
+            AutoEngineerMode aimode = Mode();
             int maxSpeed = MaxSpeedMphForMode(aimode);
+            int defaultYardSpeed = YardAiExtended.Settings.DefaultYardSpeed;
           
             builder.AddObserver(persistence.ObserveOrders(delegate
             {
@@ -274,15 +270,16 @@ namespace YardAiExtended
                 });                
                 builder.AddField("", control5);
                 builder.Spacing = 8f;
-                RectTransform control4 = builder.AddSlider(() => persistence.Orders.MaxSpeedMph, delegate
+
+                if (persistence.Orders.MaxSpeedMph == 0)
                 {
-                    int maxSpeedMph25 = persistence.Orders.MaxSpeedMph;
-                    return maxSpeedMph25.ToString(); 
-                }, delegate (float value)
+                    SetOrdersValue (null, null, defaultYardSpeed, null);
+                }
+                RectTransform control4 = builder.AddSlider(() => persistence.Orders.MaxSpeedMph, () => persistence.Orders.MaxSpeedMph.ToString(), delegate (float value)
                 {
-                    int YAEspeed = (int)value;
-                    SetOrdersValue(null, null, YAEspeed, null);
-                }, 0f, maxSpeed, wholeNumbers: true);
+                    int? setSpeed = (int)value;
+                    SetOrdersValue(null, null, setSpeed, null);
+                }, 1f, maxSpeed, wholeNumbers: true);
                 builder.AddField("Yard Speed", control4);
 
                 builder.AddExpandingVerticalSpacer();
@@ -299,7 +296,7 @@ namespace YardAiExtended
                 builder.AddObserver(persistence.ObservePlannerStatusChanged(delegate
                 {
                     builder.Rebuild();
-       //             Console.Log("ID: " + ____car.id.ToString() + " Dist: " + persistence.ManualStopDistance.ToString() + " KV: " + ____car.KeyValueObject.Get("YAESpeed") + " OS: " + persistence.Orders.MaxSpeedMph.ToString());
+                    Console.Log("ID: " + ____car.Ident.ToString() + " Dist: " + persistence.ManualStopDistance.ToString() + "OS: " + persistence.Orders.MaxSpeedMph.ToString() + "Vel: " + ____car.velocity.ToString());
                 }));
                 builder.AddField("Status", persistence.PlannerStatus);
 
@@ -373,17 +370,13 @@ namespace YardAiExtended
 
             int MaxSpeedMphForMode(AutoEngineerMode mode)
             {
-                switch (mode)
+                return mode switch
                 {
-                    case AutoEngineerMode.Road:
-                        return 45;
-                    case AutoEngineerMode.Yard:
-                        return 25;
-                    case AutoEngineerMode.Off:
-                        return 0;
-                    default:
-                        throw new ArgumentOutOfRangeException("mode", mode, null);
-                }
+                    AutoEngineerMode.Road => 45,
+                    AutoEngineerMode.Yard => 25,
+                    AutoEngineerMode.Off => 0,
+                    _ => throw new ArgumentOutOfRangeException("mode", mode, null),
+                };
             }
 
             void SetOrdersValue(AutoEngineerMode? mode, bool? forward, int? maxSpeedMph, float? distance)
@@ -398,17 +391,20 @@ namespace YardAiExtended
                 }
                 if (mode == AutoEngineerMode.Yard)
                 {
-                    maxSpeedMph = ____car.KeyValueObject.Get("YAESpeed");
+                    if (persistence.Orders.MaxSpeedMph > 0)
+                    {
+                        maxSpeedMph = persistence.Orders.MaxSpeedMph;
+                    }
+                    else
+                    {
+                        maxSpeedMph = defaultYardSpeed;
+                    }
                 }
                 AutoEngineerMode mode3 = mode ?? Mode();
                 int maxSpeedMph2 = Mathf.Min(maxSpeedMph ?? orders.MaxSpeedMph, MaxSpeedMphForMode(mode3));
                 SendAutoEngineerCommand(mode3, forward ?? orders.Forward, maxSpeedMph2, distance);
             }
-
             return false;
         }
-
     }
 }
-
-
