@@ -39,7 +39,7 @@ namespace YardAiExtended
             builder.Spacing = 8f;
             AutoEngineerPersistence persistence = new AutoEngineerPersistence(____car.KeyValueObject);
             AutoEngineerMode aimode = Mode();
-            int maxSpeed = MaxSpeedMphForMode(aimode);
+            int maxSpeed = YardAiExtended.Settings.DefaultYardSpeed;
             int defaultYardSpeed = YardAiExtended.Settings.DefaultYardSpeed;
           
             builder.AddObserver(persistence.ObserveOrders(delegate
@@ -132,7 +132,6 @@ namespace YardAiExtended
 
             if (aimode == AutoEngineerMode.Road)
             {
-                int num1 = MaxSpeedMphForMode(aimode);
                 RectTransform rectTransform = builder.AddSlider(() => persistence.Orders.MaxSpeedMph / 5f, () => persistence.Orders.MaxSpeedMph.ToString(), delegate (float value)
                 {
                     int? num2 = (int)(value * 5f);
@@ -296,7 +295,7 @@ namespace YardAiExtended
                 builder.AddObserver(persistence.ObservePlannerStatusChanged(delegate
                 {
                     builder.Rebuild();
-                    Console.Log("ID: " + ____car.Ident.ToString() + " Dist: " + persistence.ManualStopDistance.ToString() + "OS: " + persistence.Orders.MaxSpeedMph.ToString() + "Vel: " + ____car.velocity.ToString());
+                    //Console.Log("ID: " + ____car.Ident.ToString() + " Dist: " + persistence.ManualStopDistance.ToString() + "OS: " + persistence.Orders.MaxSpeedMph.ToString() + "Vel: " + ____car.velocity.ToString());
                 }));
                 builder.AddField("Status", persistence.PlannerStatus);
 
