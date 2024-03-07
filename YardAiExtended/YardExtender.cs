@@ -17,24 +17,10 @@ namespace YardAiExtended
     public class AIPanelExtender
 
     {
-/*        [HarmonyPostfix]
-        [HarmonyPatch(typeof(AutoEngineerPlanner), "Loop")]
-        public static void LoopPatch(ref float? ____manualStopDistance, ref AutoEngineerPersistence ____persistence)
-        {
-            if (____manualStopDistance == 1f)
-            {
-                ____persistence.ManualStopDistance = null;
-                ____manualStopDistance = null;
-            }
-        }*/
-
         [HarmonyPrefix]
         [HarmonyPatch(typeof(CarInspector), "PopulateAIPanel")]
-        static bool PopulateAIPanelPatch(UIPanelBuilder builder/*, CarInspector __instance*/, Car ____car, Window ____window)
+        static bool PopulateAIPanelPatch(UIPanelBuilder builder, Car ____car, Window ____window)
         {
-/*            var carField = typeof(CarInspector).GetField("_car", BindingFlags.NonPublic | BindingFlags.Instance);
-            var car = carField.GetValue(__instance) as Car;*/
-
             builder.FieldLabelWidth = 100f;
             builder.Spacing = 8f;
             AutoEngineerPersistence persistence = new AutoEngineerPersistence(____car.KeyValueObject);
@@ -160,8 +146,6 @@ namespace YardAiExtended
             if (aimode == AutoEngineerMode.Yard)
             {
                 Vector2 winSize = ____window.contentRectTransform.rect.size;
-/*                Console.Log("X: " + winSize.x.ToString());
-                Console.Log("Y: " + winSize.y.ToString());*/
                 Vector3 winPos = ____window.contentRectTransform.position;
                 if (winSize.y < 323f)
                 {
@@ -252,21 +236,20 @@ namespace YardAiExtended
                         float? distance25 = 1220f;
                         SetOrdersValue(null, null, null, distance25);
                     });
-/*                    builder1.AddButton("200", delegate
-                    {
-                        float? distance25 = 2440f;
-                        SetOrdersValue(null, null, null, distance25);
-                    });*/
-
-                });
+                })
                 builder.AddField("Car lengths", control3);
+
                 RectTransform control5 = builder.ButtonStrip(delegate (UIPanelBuilder builder1)
                 {
                     builder1.AddButton("Very long", delegate
                     {
                         SetOrdersValue(null, null, null, 100000f);
                     });
-                });                
+                    builder1.AddButton("Inf", delegate
+                    {
+                        SetOrdersValue(null, null, null, null);
+                    });
+                });
                 builder.AddField("", control5);
                 builder.Spacing = 8f;
 
@@ -296,6 +279,8 @@ namespace YardAiExtended
                 {
                     builder.Rebuild();
                     #if DEBUG
+                    Console.Log("ID: " + ____car.Ident.ToString() + " Dist: " + persistence.ManualStopDistance.ToString() + "OS: " + persistence.Orders.MaxSpeedMph.ToString() + "Vel: " + ____car.velocity.ToString());
+                    #endif
                 }));
                 builder.AddField("Status", persistence.PlannerStatus);
 
