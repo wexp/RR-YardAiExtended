@@ -295,7 +295,7 @@ namespace YardAiExtended
                 builder.AddObserver(persistence.ObservePlannerStatusChanged(delegate
                 {
                     builder.Rebuild();
-                    //Console.Log("ID: " + ____car.Ident.ToString() + " Dist: " + persistence.ManualStopDistance.ToString() + "OS: " + persistence.Orders.MaxSpeedMph.ToString() + "Vel: " + ____car.velocity.ToString());
+                    #if DEBUG
                 }));
                 builder.AddField("Status", persistence.PlannerStatus);
 
