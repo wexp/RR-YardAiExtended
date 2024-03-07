@@ -236,7 +236,7 @@ namespace YardAiExtended
                         float? distance25 = 1220f;
                         SetOrdersValue(null, null, null, distance25);
                     });
-                })
+                });
                 builder.AddField("Car lengths", control3);
 
                 RectTransform control5 = builder.ButtonStrip(delegate (UIPanelBuilder builder1)
@@ -244,10 +244,6 @@ namespace YardAiExtended
                     builder1.AddButton("Very long", delegate
                     {
                         SetOrdersValue(null, null, null, 100000f);
-                    });
-                    builder1.AddButton("Inf", delegate
-                    {
-                        SetOrdersValue(null, null, null, null);
                     });
                 });
                 builder.AddField("", control5);
@@ -261,7 +257,7 @@ namespace YardAiExtended
                 {
                     int? setSpeed = (int)value;
                     SetOrdersValue(null, null, setSpeed, null);
-                }, 1f, maxSpeed, wholeNumbers: true);
+                }, 1f, (float)MaxSpeedMphForMode(aimode), wholeNumbers: true);
                 builder.AddField("Yard Speed", control4);
 
                 builder.AddExpandingVerticalSpacer();
