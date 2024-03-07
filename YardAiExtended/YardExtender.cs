@@ -122,7 +122,7 @@ namespace YardAiExtended
                 {
                     int? num2 = (int)(value * 5f);
                     SetOrdersValue(null, null, num2, null);
-                }, 0f, maxSpeed / 5f, true, null);
+                }, 0f, MaxSpeedMphForMode(AutoEngineerMode.Road) / 5f, true, null);
                 builder.AddField("Max Speed", rectTransform);
                 builder.AddExpandingVerticalSpacer();
                 builder.AddObserver(persistence.ObservePassengerModeStatusChanged(delegate
