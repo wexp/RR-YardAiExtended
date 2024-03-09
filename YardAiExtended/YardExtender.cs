@@ -69,7 +69,7 @@ namespace YardAiExtended
                 {
                     action3 = (something3 = delegate
                     {
-                        SetOrdersValue(AutoEngineerMode.Yard, null, null, null);
+                        SetOrdersValue(AutoEngineerMode.Yard, null, defaultYardSpeed, null);
                     });
                 }
                 builder.AddButtonSelectable(text3, flag3, action3);

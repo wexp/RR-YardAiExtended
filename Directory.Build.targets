@@ -46,10 +46,11 @@
     <!-- Remove the old Mods directory, and Zips file if any is lying around -->
     <ItemGroup>
       <OldZips Include="$(PublishPath)/$(AssemblyName)_*.zip" />
+	  <Configs Include="$(PublishPath)/$(AssemblyName)*.dll.config"></Configs>
     </ItemGroup>
     
     <RemoveDir Directories="$(ModsDirectory)"  ContinueOnError="true" />
-    <Delete Files="@(OldZips)" />
+    <Delete Files="@(OldZips); @(Configs)"/>
     
     <!-- Create the Mods directory again -->
     <MakeDir Directories="$(ModDirectory)" />
