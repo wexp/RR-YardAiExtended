@@ -3,6 +3,9 @@
 # What is this?
 A small tool for the game Railroader.
 
+### This mod is deprecated - last supported Railroader version is 2024.3.1
+An excellent upgrade is peterellisjones' SmartOrders: https://github.com/peterellisjones/Railroader-SmartOrders
+
 Adds more "Distance" buttons when using Yard Mode (AI Engineer).
 v1.1 adds an option to change the desired speed when using Yard Mode (AI Engineer).
 Maximum yard speed is increased to 25 mph, derailments will still be your responsibility.
